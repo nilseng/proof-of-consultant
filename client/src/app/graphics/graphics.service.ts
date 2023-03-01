@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
   ACESFilmicToneMapping,
+  BoxGeometry,
   Camera,
   Color,
+  CylinderGeometry,
   MathUtils,
+  Mesh,
+  MeshStandardMaterial,
   PerspectiveCamera,
   PlaneGeometry,
   PMREMGenerator,
@@ -34,6 +38,9 @@ export class GraphicsService {
 
     const water = this.createWater();
     scene.add(water);
+
+    const installationObjects = this.createInstallationObjects();
+    scene.add(...installationObjects);
 
     const renderer = new WebGLRenderer();
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -129,5 +136,38 @@ export class GraphicsService {
     controls.minDistance = 40.0;
     controls.maxDistance = 500.0;
     controls.update();
+  }
+
+  private createInstallationObjects() {
+    const cylinderGeometry = new CylinderGeometry(2.5, 2, 20);
+    const material = new MeshStandardMaterial({ roughness: 0 });
+    const cylinder1 = new Mesh(cylinderGeometry, material);
+    cylinder1.position.x = -10;
+    cylinder1.position.z = -10;
+    cylinder1.position.y = 10;
+    const cylinder2 = new Mesh(cylinderGeometry, material);
+    cylinder2.position.x = 10;
+    cylinder2.position.z = -10;
+    cylinder2.position.y = 10;
+    const cylinder3 = new Mesh(cylinderGeometry, material);
+    cylinder3.position.x = -10;
+    cylinder3.position.z = 10;
+    cylinder3.position.y = 10;
+    const cylinder4 = new Mesh(cylinderGeometry, material);
+    cylinder4.position.x = 10;
+    cylinder4.position.z = 10;
+    cylinder4.position.y = 10;
+
+    const floorGeometry = new BoxGeometry(30, 1, 30);
+    const floor = new Mesh(floorGeometry, material);
+    floor.position.y = 20.5;
+
+    const buildingGeometry = new BoxGeometry(10, 5, 15);
+    const building = new Mesh(buildingGeometry, material);
+    building.position.y = 23.5;
+    building.position.x = -9;
+    building.position.z = -6.5;
+
+    return [cylinder1, cylinder2, cylinder3, cylinder4, floor, building];
   }
 }

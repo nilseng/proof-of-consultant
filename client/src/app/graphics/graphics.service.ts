@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   ACESFilmicToneMapping,
+  Camera,
   Color,
   MathUtils,
   PerspectiveCamera,
@@ -12,6 +13,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Sky } from 'three/examples/jsm/objects/Sky';
 import { Water } from 'three/examples/jsm/objects/Water';
 
@@ -42,6 +44,8 @@ export class GraphicsService {
     const { environment, sky } = this.createSky(renderer, water);
     scene.environment = environment;
     scene.add(sky);
+
+    this.createOrbitControls({ camera, renderer });
 
     this.animate(() => renderer.render(scene, camera), water);
 
@@ -110,5 +114,20 @@ export class GraphicsService {
     const renderTarget = pmremGenerator.fromScene(sky as unknown as Scene);
 
     return { environment: renderTarget.texture, sky };
+  }
+
+  private createOrbitControls({
+    camera,
+    renderer,
+  }: {
+    camera: Camera;
+    renderer: WebGLRenderer;
+  }) {
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.maxPolarAngle = Math.PI * 0.495;
+    controls.target.set(0, 10, 0);
+    controls.minDistance = 40.0;
+    controls.maxDistance = 500.0;
+    controls.update();
   }
 }
